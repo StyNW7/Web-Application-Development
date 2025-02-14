@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendaftaran Kursus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Daftar Kursus Online</h2>
+        <table>
+            <tr>
+                <th>Nama Kursus</th>
+                <th>Durasi</th>
+                <th>Biaya</th>
+            </tr>
+            <tr>
+                <td>Web Design (HTML & CSS)</td>
+                <td>4 Minggu</td>
+                <td>Rp 500.000</td>
+            </tr>
+            <tr>
+                <td>JavaScript Dasar</td>
+                <td>6 Minggu</td>
+                <td>Rp 750.000</td>
+            </tr>
+            <tr>
+                <td>Python untuk Pemula</td>
+                <td>8 Minggu</td>
+                <td>Rp 1.000.000</td>
+            </tr>
+        </table>
+
+        <h2>Formulir Pendaftaran</h2>
+        <form action="#" method="post">
+            <label for="nama">Nama Lengkap:</label>
+            <input type="text" id="nama" name="nama" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="kursus">Pilih Kursus:</label>
+            <select id="kursus" name="kursus">
+                <option value="Web Design">Web Design (HTML & CSS)</option>
+                <option value="JavaScript">JavaScript Dasar</option>
+                <option value="Python">Python untuk Pemula</option>
+            </select>
+
+            <button type="submit">Daftar Sekarang</button>
+        </form>
+    </div>
+
+    <p class="footer">© 2025 Kursus Online - Dibuat dengan ❤️ oleh Developer</p>
+
+</body>
+</html>
