@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>jQuery Web Interaction</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    .box {
+      width: 200px;
+      height: 100px;
+      background: #007bff;
+      color: white;
+      line-height: 100px;
+      text-align: center;
+      margin: 20px auto;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .toggle-target {
+      display: none;
+      background: #17a2b8;
+      padding: 10px;
+      color: white;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .form-section {
+      width: 300px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .form-section input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .slider {
+      width: 80%;
+      max-width: 600px;
+      margin: 40px auto;
+      overflow: hidden;
+      position: relative;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .slider img {
+      width: 100%;
+      display: none;
+    }
+
+    .slider img.active {
+      display: block;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>jQuery Interactive Demo</h1>
+
+  <!-- Selector & Click Event -->
+  <div class="box" id="clickBox">Click Me</div>
+  <div class="toggle-target">Toggled Content 🎉</div>
+
+  <!-- Hover Event -->
+  <div class="box" id="hoverBox">Hover Over Me</div>
+
+  <!-- Form Submit -->
+  <div class="form-section">
+    <form id="myForm">
+      <label for="name">Enter your name:</label>
+      <input type="text" id="name" required />
+      <button type="submit">Submit</button>
+    </form>
+    <p id="formResult" style="display:none; margin-top:10px;"></p>
+  </div>
+
+  <!-- Effects (Slide, Hide, Show, Animate) -->
+  <div class="box" id="effectBox">Effect Box</div>
+  <div class="box" id="animateBox" style="background:#ffc107;">Animate Me</div>
+
+  <!-- jQuery Slider -->
+  <div class="slider">
+    <img src="./assets/music.png" class="active" />
+    <img src="./assets/tech.png" />
+    <img src="./assets/nature.png" />
+  </div>
+
+  <script>
+    // Click Event & Toggle
+    $('#clickBox').click(function () {
+      $('.toggle-target').toggle(500);
+    });
+
+    // Hover Event
+    $('#hoverBox').hover(
+      function () {
+        $(this).css('background-color', '#28a745').text("Hovered!");
+      },
+      function () {
+        $(this).css('background-color', '#007bff').text("Hover Over Me");
+      }
+    );
+
+    // Submit Event
+    $('#myForm').submit(function (e) {
+      e.preventDefault();
+      const name = $('#name').val();
+      $('#formResult')
+        .text("Halo, " + name + "! Form berhasil dikirim.")
+        .fadeIn();
+    });
+
+    // Effects
+    $('#effectBox').click(function () {
+      $(this).slideUp().slideDown();
+    });
+
+    // Animation
+    $('#animateBox').click(function () {
+      $(this).animate({
+        width: "300px",
+        height: "150px",
+        opacity: 0.7
+      }, 800).animate({
+        width: "200px",
+        height: "100px",
+        opacity: 1
+      }, 800);
+    });
+
+    // jQuery Slider
+    let index = 0;
+    setInterval(function () {
+      const images = $(".slider img");
+      images.removeClass("active");
+      index = (index + 1) % images.length;
+      images.eq(index).addClass("active");
+    }, 3000);
+  </script>
+
+</body>
+</html>

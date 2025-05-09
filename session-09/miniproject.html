@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>jQuery Mini Project - Interactive Site</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2f5f7;
+      color: #333;
+    }
+
+    header {
+      background: #0d6efd;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 28px;
+    }
+
+    nav {
+      background: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #0d6efd;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #6610f2;
+    }
+
+    section {
+      max-width: 800px;
+      margin: auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .btn {
+      background: #0d6efd;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background: #084298;
+    }
+
+    .toggle-box {
+      display: none;
+      background: #e2f0ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .form-message {
+      display: none;
+      margin-top: 15px;
+      color: #198754;
+      font-weight: bold;
+    }
+
+    .animate-box {
+      background: #ffc107;
+      height: 100px;
+      width: 200px;
+      margin: 40px auto;
+      line-height: 100px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .slider {
+      margin-top: 50px;
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .slider img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .slider img.active {
+      display: block;
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Interactive Page - By NW</h1>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#form">Form</a>
+    <a href="#slider">Gallery</a>
+  </nav>
+
+  <section id="about">
+    <h2>✨ Interactive Elements</h2>
+    <button class="btn" id="toggleBtn">Show More Info</button>
+    <div class="toggle-box">This is some extra content revealed with jQuery toggle! 🎉</div>
+  </section>
+
+  <section id="form">
+    <h2>📝 Quick Form</h2>
+    <form id="myForm">
+      <label>Enter your name:</label>
+      <input type="text" id="name" placeholder="Your name" required />
+      <button type="submit" class="btn">Submit</button>
+    </form>
+    <p class="form-message" id="formResult"></p>
+  </section>
+
+  <section id="animate">
+    <h2>🎬 Click to Animate</h2>
+    <div class="animate-box" id="animateBox">Animate Me!</div>
+  </section>
+
+  <section id="slider">
+    <h2>📸 Gallery Slider</h2>
+    
+    <div class="center">
+        <button id="left-button" class="btn">
+            Left
+        </button>
+        <div class="slider">
+            <img src="./assets/music.png" class="active" />
+            <img src="./assets/nature.png" />
+            <img src="./assets/tech.png" />
+        </div>
+         <button id="right-button" class="btn">
+            Right
+        </button>
+    </div>
+
+  </section>
+
+  <script>
+
+    // Toggle Button
+    $('#toggleBtn').click(function () {
+      $('.toggle-box').slideToggle();
+    });
+
+    // Form Submission
+    $('#myForm').submit(function (e) {
+      e.preventDefault();
+      const name = $('#name').val();
+      $('#formResult')
+        .text("Hello, " + name + "! Thanks for submitting.")
+        .fadeIn();
+    });
+
+    // Animation
+    $('#animateBox').click(function () {
+      $(this).animate({
+        width: "300px",
+        height: "150px",
+        opacity: 0.7
+      }, 700).animate({
+        width: "200px",
+        height: "100px",
+        opacity: 1
+      }, 700);
+    });
+
+    // Slider
+
+    let slideIndex = 0;
+
+    const images = $('.slider img');
+
+    // setInterval(() => {
+    //   images.removeClass('active');
+    //   slideIndex = (slideIndex + 1) % images.length;
+    //   images.eq(slideIndex).addClass('active');
+    // }, 3000);
+
+    const leftButton = $("#left-button")
+    const rightButton = $("#right-button")
+
+    leftButton.click(() => {
+        images.removeClass('active');
+        slideIndex = (slideIndex - 1) % images.length;
+        images.eq(slideIndex).addClass('active');
+    })
+
+    rightButton.click(() => {
+        images.removeClass('active');
+        slideIndex = (slideIndex + 1) % images.length;
+        images.eq(slideIndex).addClass('active');
+    })
+
+  </script>
+
+</body>
+</html>

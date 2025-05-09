@@ -23,8 +23,14 @@ var name = "Stanley"
 
 if (name === "Stanley"){
     let age = 30
+    var number = 7
     console.log("I'm Var");
 }
+
+
+console.log(number)
+
+
 
 // if (age != NaN){
 //     console.log("I'm Age");
