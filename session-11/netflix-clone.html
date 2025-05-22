@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.7) 10%, transparent);
+            z-index: 1000;
+            padding: 15px 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        .header.scrolled {
+            background-color: #141414;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #e50914;
+            font-size: 30px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #b3b3b3;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #e50914;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+        }
+
+        .hero-content {
+            max-width: 500px;
+        }
+
+        .hero-title {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-description {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            line-height: 1.3;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-play {
+            background-color: white;
+            color: black;
+        }
+
+        .btn-play:hover {
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        .btn-info {
+            background-color: rgba(109,109,110,0.7);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: rgba(109,109,110,0.4);
+        }
+
+        /* Content Rows */
+        .content-rows {
+            margin-top: -100px;
+            position: relative;
+            z-index: 2;
+            padding: 0 50px;
+        }
+
+        .row {
+            margin-bottom: 30px;
+        }
+
+        .row-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #e5e5e5;
+        }
+
+        .row-posters {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .row-posters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .poster {
+            min-width: 200px;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .poster:hover {
+            transform: scale(1.05);
+        }
+
+        .poster-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px 10px 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .poster:hover .poster-overlay {
+            opacity: 1;
+        }
+
+        .poster-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .poster-rating {
+            font-size: 12px;
+            color: #46d369;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: #181818;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 6px;
+            width: 90%;
+            max-width: 850px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-hero {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: end;
+            padding: 40px;
+        }
+
+        .modal-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 50%, rgba(24,24,24,0.8) 100%);
+        }
+
+        .modal-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .modal-details {
+            padding: 0 40px 40px;
+        }
+
+        .modal-description {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            color: #d2d2d2;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            background: rgba(42,42,42,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close:hover {
+            background: rgba(42,42,42,0.8);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 0 20px;
+                height: 70vh;
+            }
+
+            .hero-title {
+                font-size: 2.5em;
+            }
+
+            .hero-description {
+                font-size: 1.1em;
+            }
+
+            .content-rows {
+                padding: 0 20px;
+            }
+
+            .poster {
+                min-width: 150px;
+                height: 225px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .modal-hero {
+                height: 300px;
+                padding: 20px;
+            }
+
+            .modal-title {
+                font-size: 2em;
+            }
+
+            .modal-details {
+                padding: 0 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav">
+            <a href="#" class="logo">NETFLIX</a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">TV Shows</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">New & Popular</a></li>
+                <li><a href="#">My List</a></li>
+                <li><a href="#">Browse by Languages</a></li>
+            </ul>
+            <div class="user-menu">
+                <div class="profile-icon">U</div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Stranger Things</h1>
+            <p class="hero-description">When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-play" onclick="playMovie()">▶ Play</button>
+                <button class="btn btn-info" onclick="openModal('hero')">ⓘ More Info</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Rows -->
+    <div class="content-rows">
+        <div class="row">
+            <h2 class="row-title">Trending Now</h2>
+            <div class="row-posters" id="trending-row"></div>
+        </div>
+
+        <div class="row">
+            <h2 class="row-title">Netflix Originals</h2>
+            <div class="row-posters" id="originals-row"></div>
+        </div>
+
+        <div class="row">
+            <h2 class="row-title">Action Movies</h2>
+            <div class="row-posters" id="action-row"></div>
+        </div>
+
+        <div class="row">
+            <h2 class="row-title">Comedy Movies</h2>
+            <div class="row-posters" id="comedy-row"></div>
+        </div>
+
+        <div class="row">
+            <h2 class="row-title">Horror Movies</h2>
+            <div class="row-posters" id="horror-row"></div>
+        </div>
+
+        <div class="row">
+            <h2 class="row-title">Documentaries</h2>
+            <div class="row-posters" id="documentary-row"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-hero" id="modal-hero">
+                <div class="modal-info">
+                    <h2 class="modal-title" id="modal-title">Movie Title</h2>
+                    <div class="hero-buttons">
+                        <button class="btn btn-play" onclick="playMovie()">▶ Play</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-details">
+                <p class="modal-description" id="modal-description">Movie description goes here...</p>
+                <div class="modal-meta">
+                    <span>2023</span>
+                    <span>1h 45m</span>
+                    <span>HD</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample movie data
+        const movies = {
+            trending: [
+                { title: "Wednesday", image: "/api/placeholder/200/300", rating: "98% Match", description: "Smart, sarcastic and a little dead inside, Wednesday Addams investigates a murder spree while making new friends — and foes — at Nevermore Academy." },
+                { title: "The Crown", image: "/api/placeholder/200/300", rating: "96% Match", description: "This drama follows the political rivalries and romance of Queen Elizabeth II's reign and the events that shaped the second half of the 20th century." },
+                { title: "Stranger Things", image: "/api/placeholder/200/300", rating: "95% Match", description: "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl." },
+                { title: "The Witcher", image: "/api/placeholder/200/300", rating: "92% Match", description: "Geralt of Rivia, a solitary monster hunter, struggles to find his place in a world where people often prove more wicked than beasts." },
+                { title: "Ozark", image: "/api/placeholder/200/300", rating: "91% Match", description: "A financial advisor drags his family from Chicago to the Missouri Ozarks, where he must launder $500 million in five years to appease a drug boss." },
+                { title: "Money Heist", image: "/api/placeholder/200/300", rating: "89% Match", description: "To carry out the biggest heist in history, a mysterious man called The Professor recruits a band of eight robbers who have a single characteristic: none of them has anything to lose." }
+            ],
+            originals: [
+                { title: "House of Cards", image: "/api/placeholder/200/300", rating: "87% Match", description: "A Congressman works with his equally conniving wife to exact revenge on the people who betrayed him." },
+                { title: "Orange Is the New Black", image: "/api/placeholder/200/300", rating: "85% Match", description: "A privileged New Yorker ends up in a women's prison when a past crime catches up with her in this Emmy-winning series." },
+                { title: "Narcos", image: "/api/placeholder/200/300", rating: "94% Match", description: "The true story of Colombia's infamously violent and powerful drug cartels fuels this gritty gangster drama series." },
+                { title: "Black Mirror", image: "/api/placeholder/200/300", rating: "90% Match", description: "This sci-fi anthology series explores a twisted, high-tech near-future where humanity's greatest innovations and darkest instincts collide." },
+                { title: "Mindhunter", image: "/api/placeholder/200/300", rating: "88% Match", description: "In the late 1970s, two FBI agents broaden the realm of criminal science by investigating the psychology behind murder." },
+                { title: "Dark", image: "/api/placeholder/200/300", rating: "93% Match", description: "A missing child causes four families to help each other for answers and force them to enter a world of dark mystery." }
+            ],
+            action: [
+                { title: "Extraction", image: "/api/placeholder/200/300", rating: "86% Match", description: "A black-market mercenary who has nothing to lose is hired to rescue the kidnapped son of an imprisoned international crime lord." },
+                { title: "6 Underground", image: "/api/placeholder/200/300", rating: "84% Match", description: "After faking his death, a tech billionaire recruits a team of international operatives for a bold and bloody mission to take down a brutal dictator." },
+                { title: "The Old Guard", image: "/api/placeholder/200/300", rating: "88% Match", description: "A covert team of immortal mercenaries is suddenly exposed and must now fight to keep their identity a secret." },
+                { title: "Triple Frontier", image: "/api/placeholder/200/300", rating: "82% Match", description: "Struggling to make ends meet, former military operatives reunite for a high-stakes heist involving a South American drug lord." },
+                { title: "Polar", image: "/api/placeholder/200/300", rating: "80% Match", description: "An aging assassin faces off against younger killers as he races to collect retirement money he's owed." },
+                { title: "Bird Box", image: "/api/placeholder/200/300", rating: "85% Match", description: "Five years after an ominous unseen presence drives most of society to suicide, a survivor and her two children make a desperate bid to reach safety." }
+            ],
+            comedy: [
+                { title: "The Good Place", image: "/api/placeholder/200/300", rating: "91% Match", description: "A self-centered Eleanor Shellstrop is sent to the Good Place after her death, but she doesn't belong there." },
+                { title: "Space Force", image: "/api/placeholder/200/300", rating: "78% Match", description: "A four-star general begrudgingly teams up with an eccentric scientist to get the U.S. military's newest agency — Space Force — ready for lift-off." },
+                { title: "Russian Doll", image: "/api/placeholder/200/300", rating: "89% Match", description: "A cynical young woman gets caught in a mysterious time loop, repeatedly attending the same party and dying at the end of the night." },
+                { title: "GLOW", image: "/api/placeholder/200/300", rating: "86% Match", description: "In 1980s LA, a crew of misfits reinvent themselves as the Gorgeous Ladies of Wrestling." },
+                { title: "Dead to Me", image: "/api/placeholder/200/300", rating: "87% Match", description: "A hotheaded widow searching for the hit-and-run driver who mowed down her husband befriends an eccentric optimist who isn't quite what she seems." },
+                { title: "Never Have I Ever", image: "/api/placeholder/200/300", rating: "84% Match", description: "After a traumatic year, an Indian-American teen just wants to spruce up her social status — but friends, family and feelings won't make it easy on her." }
+            ],
+            horror: [
+                { title: "The Haunting of Hill House", image: "/api/placeholder/200/300", rating: "92% Match", description: "Flashing between past and present, a fractured family confronts haunting memories of their old home and the terrifying events that drove them from it." },
+                { title: "Ratched", image: "/api/placeholder/200/300", rating: "83% Match", description: "An origins story featuring the legendary Nurse Ratched from One Flew Over the Cuckoo's Nest." },
+                { title: "The Ritual", image: "/api/placeholder/200/300", rating: "81% Match", description: "A group of friends reunite after a long time to remember their friend, but their trip takes a turn for the worse when a nightmare comes true." },
+                { title: "Gerald's Game", image: "/api/placeholder/200/300", rating: "79% Match", description: "When her husband's sex game goes wrong, Jessie finds herself handcuffed to a bed in a remote lake house." },
+                { title: "His House", image: "/api/placeholder/200/300", rating: "88% Match", description: "A refugee couple makes a harrowing escape from war-torn South Sudan, but then they struggle to adjust to their new life in an English town." },
+                { title: "Cam", image: "/api/placeholder/200/300", rating: "77% Match", description: "Alice, a cam girl who broadcasts from her bedroom, finds her identity and livelihood threatened when someone copies her show." }
+            ],
+            documentary: [
+                { title: "My Octopus Teacher", image: "/api/placeholder/200/300", rating: "95% Match", description: "After years of swimming every day in the freezing ocean at the tip of Africa, Craig Foster meets an unlikely teacher: a young octopus." },
+                { title: "Tiger King", image: "/api/placeholder/200/300", rating: "89% Match", description: "A zoo owner spirals out of control amid a cast of eccentric characters in this true murder-for-hire story from the underworld of big cat breeding." },
+                { title: "Making a Murderer", image: "/api/placeholder/200/300", rating: "91% Match", description: "Filmed over 10 years, this real-life thriller follows a DNA exoneree who, while exposing police corruption, becomes a suspect in a grisly new crime." },
+                { title: "Wild Wild Country", image: "/api/placeholder/200/300", rating: "93% Match", description: "When the world's most controversial guru builds a utopian city in the Oregon desert, conflict with the locals escalates into a national scandal." },
+                { title: "The Social Dilemma", image: "/api/placeholder/200/300", rating: "87% Match", description: "Tech experts sound the alarm on their own creations. This documentary-drama hybrid explores the dangerous human impact of social networking." },
+                { title: "American Factory", image: "/api/placeholder/200/300", rating: "90% Match", description: "In post-industrial Ohio, a Chinese billionaire opens a new factory in the husk of an abandoned General Motors plant, hiring two thousand blue-collar Americans." }
+            ]
+        };
+
+        // Populate movie rows
+        function populateRow(rowId, movieArray) {
+            const row = document.getElementById(rowId);
+            movieArray.forEach(movie => {
+                const poster = document.createElement('div');
+                poster.className = 'poster';
+                poster.style.backgroundImage = `url('${movie.image}')`;
+                poster.innerHTML = `
+                    <div class="poster-overlay">
+                        <div class="poster-title">${movie.title}</div>
+                        <div class="poster-rating">${movie.rating}</div>
+                    </div>
+                `;
+                poster.onclick = () => openModal(movie);
+                row.appendChild(poster);
+            });
+        }
+
+        // Initialize all rows
+        populateRow('trending-row', movies.trending);
+        populateRow('originals-row', movies.originals);
+        populateRow('action-row', movies.action);
+        populateRow('comedy-row', movies.comedy);
+        populateRow('horror-row', movies.horror);
+        populateRow('documentary-row', movies.documentary);
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Modal functionality
+        function openModal(movie) {
+            const modal = document.getElementById('modal');
+            const modalHero = document.getElementById('modal-hero');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+
+            if (movie === 'hero') {
+                modalTitle.textContent = 'Stranger Things';
+                modalDescription.textContent = 'When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.';
+                modalHero.style.backgroundImage = "url('/api/placeholder/850/400')";
+            } else {
+                modalTitle.textContent = movie.title;
+                modalDescription.textContent = movie.description;
+                modalHero.style.backgroundImage = `url('${movie.image.replace('200/300', '850/400')}')`;
+            }
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function playMovie() {
+            alert('Playing movie... (This would normally start video playback)');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
